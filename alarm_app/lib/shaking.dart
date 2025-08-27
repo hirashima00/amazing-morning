@@ -14,8 +14,10 @@ class _ShakeScreenState extends State<ShakeScreen> {
   StreamSubscription? _accelerometerSub;
   bool _shaken = false;
 
-  double _remainingShake = 1000.0; // HP
-  double _lastAcceleration = 0.0;  // 直近の加速度（表示用）
+  double _HP = 1000.0; // HP
+  double _attack = 0.0;
+  double _currentAttack = 0.0;
+  double _totalAttack = 0.0;
 
   @override
   void initState() {
@@ -29,13 +31,17 @@ class _ShakeScreenState extends State<ShakeScreen> {
       double acceleration = sqrt(x * x + y * y + z * z);
 
       setState(() {
-        _lastAcceleration = acceleration; // 表示用に保存
         if (acceleration > 30) {
-          _remainingShake -= acceleration;
+          _currentAttack = acceleration;
+          _HP -= _currentAttack;
+          _attack = _currentAttack;
+        }
+        else{
+          _currentAttack = 0;
         }
       });
 
-      if (_remainingShake <= 0 && !_shaken) {
+      if (_HP <= 0 && !_shaken) {
         debugPrint("クリア！加速度 = $acceleration");
         _shaken = true;
         Navigator.pop(context);
@@ -54,11 +60,19 @@ class _ShakeScreenState extends State<ShakeScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('振れ！！')),
       body: Center(
-        child: Text(
-          "与えたダメージ: ${_lastAcceleration.toStringAsFixed(2)}\n"
-          "残りHP: ${_remainingShake.toStringAsFixed(2)}",
-          style: const TextStyle(fontSize: 24),
-          textAlign: TextAlign.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text("与えたダメージ: ${_attack.toStringAsFixed(2)}\n",
+            style: const TextStyle(fontSize: 24),
+            textAlign: TextAlign.center,            
+            ),
+            Text("残りHP: ${_HP.toStringAsFixed(2)}",
+            style: const TextStyle(fontSize: 24),
+            textAlign: TextAlign.center,
+           )
+          ],
         ),
       ),
     );
