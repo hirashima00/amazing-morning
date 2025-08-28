@@ -57,12 +57,26 @@ class _ShakeScreenState extends State<ShakeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('振れ！！')),
+      appBar: AppBar(
+        title: const Text('ふれ！！'),
+        automaticallyImplyLeading: false//戻る
+        ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Transform.rotate(
+                    angle: (-1*pi/6),
+                    alignment: Alignment.center,
+                    child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                    Text("ふれ！",style: TextStyle(fontSize: 100),),
+                ],
+              )
+            ),
+            SizedBox(height: 100,),
             Text("与えたダメージ: ${_attack.toStringAsFixed(2)}\n",
             style: const TextStyle(fontSize: 24),
             textAlign: TextAlign.center,            

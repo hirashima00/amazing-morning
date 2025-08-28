@@ -16,11 +16,11 @@ class _CompassPageState extends State<timerPage> {
   Timer? _timer;
   int _counter = 0;
   final audioPlayer = AudioPlayer();//オーディオ
-
+  StreamSubscription<CompassEvent>? _compass;//コンパス
   @override
   void initState() {
     super.initState();
-    FlutterCompass.events?.listen((event) {
+    _compass = FlutterCompass.events?.listen((event) {
       setState(() {
         if (_baseHeading == null && event.heading != null) {
           _baseHeading = event.heading;
@@ -31,6 +31,8 @@ class _CompassPageState extends State<timerPage> {
   }
   @override
   void dispose() {
+    
+    _compass?.cancel();
     audioPlayer.dispose();
     super.dispose();
   }
@@ -193,7 +195,7 @@ class _CompassPageState extends State<timerPage> {
                       
                       const Duration(milliseconds: 10),
                       
-                      (Timer timer) {
+                      (Timer timer) async{
                         
                         if(_counter > 0){
                           setState(() {
@@ -202,7 +204,10 @@ class _CompassPageState extends State<timerPage> {
                         }
                         else{
                           timer.cancel();
-                          audioPlayer.play(AssetSource("assets/.alarm.wav"));
+                          
+                          await audioPlayer.setReleaseMode(ReleaseMode.loop);
+                          audioPlayer.play(AssetSource("alarm.mp3"));
+                          await audioPlayer.setVolume(0.8);
                         }  
                       },
                     );
