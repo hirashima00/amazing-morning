@@ -1,0 +1,6 @@
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/home2.png # この行だけで画像が表示されます
+  android: true
+  ios: true
+  ios_content_mode: 'scaleToFill'
