@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:sensors_plus/sensors_plus.dart';
 
+//試し
 
 class Fortune {
   final String label;
@@ -145,7 +146,7 @@ class _OmikujiPageState extends State<OmikujiPage> {
       floatingActionButton: isWaiting
           ? null
           : FloatingActionButton.extended(
-              onPressed: (){
+              onPressed: () {
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.exit_to_app),
