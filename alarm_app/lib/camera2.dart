@@ -362,7 +362,7 @@ class _BoomPraiseBannerState extends State<BoomPraiseBanner>
           emoji: emojis[_rnd.nextInt(emojis.length)],
           size: size,
           spinTurns: spin,
-          startDelay: _rnd.nextDouble() * 0.2, // ばらける遅延
+          startDelay: _rnd.nextDouble() * 0.2, // ばらける遅延/
         ),
       );
     }
