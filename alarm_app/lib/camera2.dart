@@ -47,7 +47,7 @@ class _CameraPageState extends State<CameraPage> {
     try {
       final cams = await availableCameras();
       final back = cams.firstWhere(
-        (c) => c.lensDirection == CameraLensDirection.back,
+        (c) => c.lensDirection == CameraLensDirection.front,
         orElse: () => cams.first,
       );
       final ctrl = CameraController(
@@ -221,16 +221,16 @@ class _CameraPageState extends State<CameraPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Transform.rotate(
-                    angle: (-1*pi/6),
-                    alignment: Alignment.center,
-                    child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                    Text("とれ！",style: TextStyle(fontSize: 100),),
-                    ],
-                  )
-                ),
+                // Transform.rotate(
+                //     angle: (-1*pi/6),
+                //     alignment: Alignment.center,
+                //     child: Column(
+                //     mainAxisSize: MainAxisSize.min,
+                //     children: [
+                //     Text("とれ！",style: TextStyle(fontSize: 100),),
+                //     ],
+                //   )
+                // ),
                 SizedBox(height: 100,),
                 FloatingActionButton.large(
                   heroTag: 'shutter',

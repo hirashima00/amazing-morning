@@ -33,14 +33,49 @@ class _OmikujiPageState extends State<OmikujiPage> {
   bool _paperDropped = false;
 
   static const fortunes = <Fortune>[
-    Fortune('大吉', '最高の一日が始まる！', Colors.red, 0.10),
-    Fortune('中吉', 'コツコツが実を結ぶ。', Colors.orange, 0.20),
-    Fortune('小吉', '小さな喜びを大切に。', Colors.amber, 0.25),
-    Fortune('吉', '肩の力を抜いていこう。', Colors.green, 0.20),
-    Fortune('末吉', 'タイミングを見極めて。', Colors.blue, 0.15),
-    Fortune('凶', '慎重に。確認を忘れず。', Colors.indigo, 0.08),
-    Fortune('大凶', '無理は禁物、今日は充電。', Colors.black, 0.02),
-  ];
+  Fortune(
+    '大吉',
+    '今日はまさに運命の追い風。新しい挑戦や決断には最高のタイミングです。自信を持って行動しましょう！',
+    Colors.red,
+    0.10,
+  ),
+  Fortune(
+    '中吉',
+    '継続は力なり。少しずつ積み重ねてきた努力が実を結ぶとき。焦らず、着実に進んでください。',
+    Colors.orange,
+    0.20,
+  ),
+  Fortune(
+    '小吉',
+    '日常の中にこそ幸せが隠れています。何気ない出来事にも目を向けて、小さな喜びを感じてみましょう。',
+    Colors.amber,
+    0.25,
+  ),
+  Fortune(
+    '吉',
+    '無理に前に進むよりも、今は流れに身を任せるのが吉。リラックスする時間を大切にすると運気も上昇します。',
+    Colors.green,
+    0.20,
+  ),
+  Fortune(
+    '末吉',
+    'まだ芽は出なくても、地中では根が育っています。今は準備と見極めのとき。機が熟すのを待ちましょう。',
+    Colors.blue,
+    0.15,
+  ),
+  Fortune(
+    '凶',
+    '思わぬトラブルに注意。今日は慎重に動くことが大切です。確認と安全第一を心がけましょう。',
+    Colors.indigo,
+    0.08,
+  ),
+  Fortune(
+    '大凶',
+    '心身ともに無理は禁物。トラブルを未然に防ぐためにも、今日は静かに過ごし、しっかり休養を取りましょう。',
+    Colors.black,
+    0.02,
+  ),
+];
 
   @override
   void initState() {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 class timerPage extends StatefulWidget {
   const timerPage({super.key});
 
@@ -17,6 +18,7 @@ class _CompassPageState extends State<timerPage> {
   int _counter = 0;
   final audioPlayer = AudioPlayer();//オーディオ
   StreamSubscription<CompassEvent>? _compass;//コンパス
+  bool mors = false;
   @override
   void initState() {
     super.initState();
@@ -33,6 +35,7 @@ class _CompassPageState extends State<timerPage> {
   void dispose() {
     
     _compass?.cancel();
+    _timer?.cancel();
     audioPlayer.dispose();
     super.dispose();
   }
@@ -61,8 +64,8 @@ class _CompassPageState extends State<timerPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("あと：${(_counter/100)}",style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-            Text("$seconds 秒",style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+            Text(mors ? "あと：${(_counter/100).ceil()}秒" :"あと：${(_counter/100).ceil()}分",style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+            Text(mors ?"$seconds 秒":"$seconds 分",style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
             Stack(
               alignment: Alignment.center,
               children: [
@@ -180,7 +183,8 @@ class _CompassPageState extends State<timerPage> {
                   onPressed: (){
                     setState(() {
                       _baseHeading = _heading;
-                      
+                      _counter = 0;
+                      audioPlayer.stop();
                     });
                   }, 
                   child: Text("リセット")
@@ -193,7 +197,7 @@ class _CompassPageState extends State<timerPage> {
                       });
                       _timer = Timer.periodic(
                       
-                      const Duration(milliseconds: 10),
+                      mors ? Duration(milliseconds: 10) : Duration(milliseconds: 600),
                       
                       (Timer timer) async{
                         
@@ -206,8 +210,9 @@ class _CompassPageState extends State<timerPage> {
                           timer.cancel();
                           
                           await audioPlayer.setReleaseMode(ReleaseMode.loop);
-                          audioPlayer.play(AssetSource("alarm.mp3"));
                           await audioPlayer.setVolume(0.8);
+                          await audioPlayer.play(AssetSource("alarm.mp3"));
+                          
                         }  
                       },
                     );
@@ -219,9 +224,27 @@ class _CompassPageState extends State<timerPage> {
                   }, 
                   child: Text("セット")
                 ),
-                ElevatedButton(onPressed: (){audioPlayer.stop();}, child: Text("ストップ")),
+                ElevatedButton(onPressed: (){
+                  
+                  audioPlayer.stop();
+                }, child: Text("ストップ")),
               ]
             ),
+            FlutterSwitch(
+                  width: 100,
+                  height: 40,
+                  toggleSize: 30,
+                  valueFontSize: 20,
+                  activeText: "秒",
+                  inactiveText: "分",
+                  showOnOff: true,
+                  value: mors,
+                  onToggle: (val) {
+                    setState(() {
+                      mors = val;
+                    });
+                  },
+                ),
           ],
         ),
       ),

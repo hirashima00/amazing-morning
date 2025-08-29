@@ -1,16 +1,16 @@
 import 'dart:io';
-import 'package:alarm_app/gps.dart';
-import 'package:alarm_app/toroku.dart';
 import 'package:flutter/material.dart';
 import 'package:alarm/alarm.dart';
 import 'timer.dart';
 import 'camera2.dart';
-//import 'shake.dart';
 import 'mike.dart';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'omikuzi.dart';
+import 'toroku.dart';
 import 'shaking.dart';
+import 'gps.dart';
+import 'gpsgoal.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Alarm.init(); // 初期化必須
@@ -38,7 +38,7 @@ class AlarmInfo {
   AlarmInfo({required this.id, required this.time, this.stoper});
 }
 final audiopaths = [
-  "alarm.mp3",
+  "dra.mp3",
   "usagi.mp3",
 ];
 class AlarmPage extends StatefulWidget {
@@ -57,11 +57,6 @@ class _AlarmPageState extends State<AlarmPage> {
       context,
       MaterialPageRoute(builder: (context) => const torokuPage()),
     );
-    // final picked = await showTimePicker(
-    //   context: context,
-    //   initialTime: selectedTime,
-    // );
-
     if (picked == null) return;
     bool zumi = _alarms.any((alarm) => alarm.time.hour == picked[0] && alarm.time.minute == picked[1]);
     if (zumi) {
@@ -112,7 +107,7 @@ class _AlarmPageState extends State<AlarmPage> {
 
     await Alarm.set(alarmSettings: alarmSettings);
     int ran01 = picked[2];
-    if(ran01 == 4){
+    if(ran01 == 5){
       var rng = Random();
       ran01 = rng.nextInt(5);
     }
@@ -159,12 +154,26 @@ class _AlarmPageState extends State<AlarmPage> {
             else{
               await Navigator.push(context,MaterialPageRoute(builder: (context) => const ShakeScreen(),fullscreenDialog: true,),);
             }
-          
           }
           break;
         case 3:
           await Navigator.push(context,MaterialPageRoute(builder: (context) => const SpeechPage(),fullscreenDialog: true,),);
           break;
+        case 4:
+          succses = await Navigator.push<int>(context,MaterialPageRoute(builder: (context) => const TargetWorkingPage(),fullscreenDialog: true,),);
+          if(succses != 0){
+            if(succses == 1){
+              await Navigator.push(context,MaterialPageRoute(builder: (context) => const CameraPage(),fullscreenDialog: true,),);
+            }
+            else if(succses == 2){
+              await Navigator.push(context,MaterialPageRoute(builder: (context) => const SpeechPage(),fullscreenDialog: true,),);
+            }
+            else{
+              await Navigator.push(context,MaterialPageRoute(builder: (context) => const ShakeScreen(),fullscreenDialog: true,),);
+            }
+          }
+          break;
+
       }
       await _stopAlarm(id);
       await Navigator.push(context,MaterialPageRoute(builder: (context) => const OmikujiPage(),fullscreenDialog: true,),);
@@ -176,7 +185,7 @@ class _AlarmPageState extends State<AlarmPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("アメージングアラーム"),
+        title: Text("アラーム"),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
