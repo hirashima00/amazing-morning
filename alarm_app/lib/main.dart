@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:alarm/alarm.dart';
 import 'timer.dart';
 import 'camera2.dart';
-import 'shake.dart';
+//import 'shake.dart';
 import 'mike.dart';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
-import 'slot.dart';
 import 'omikuzi.dart';
+import 'shaking.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Alarm.init(); // 初期化必須

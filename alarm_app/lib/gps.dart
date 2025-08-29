@@ -1,7 +1,6 @@
 import 'package:alarm_app/camera2.dart';
 import 'package:alarm_app/mike.dart';
 import 'package:alarm_app/omikuzi.dart';
-import 'package:alarm_app/shake.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:math';
