@@ -14,7 +14,7 @@ class _ShakeScreenState extends State<ShakeScreen> with TickerProviderStateMixin
   StreamSubscription? _accelerometerSub;
   bool _shaken = false;
 
-  double _HP = 10000.0;
+  double _HP = 1000.0;
   double _totalDamage = 0.0;
   List<double> _jab = [];
 
@@ -55,7 +55,7 @@ class _ShakeScreenState extends State<ShakeScreen> with TickerProviderStateMixin
       double acceleration = sqrt(x * x + y * y + z * z);
 
       setState(() {
-        if (acceleration > 20 && acceleration < 30) {
+        if (acceleration > 10 && acceleration < 30) {
           _jab.add(acceleration);
         } else if (acceleration >= 30 && !_isBigSwing) {
           double jabSum = _jab.fold(0, (a, b) => a + b);
@@ -83,7 +83,8 @@ class _ShakeScreenState extends State<ShakeScreen> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('振れ！！')),
+      appBar: AppBar(title: const Text('振れ！！'),
+      automaticallyImplyLeading: false),
       body: Stack(
         children: [
           // 上部に小振りの加速度リスト
@@ -136,7 +137,7 @@ class _ShakeScreenState extends State<ShakeScreen> with TickerProviderStateMixin
                             foreground: Paint()
                               ..style = PaintingStyle.stroke
                               ..strokeWidth = 4
-                              ..color = Colors.black,
+                              ..color = Colors.white,
                           ),
                         ),
                         Text(
@@ -152,7 +153,7 @@ class _ShakeScreenState extends State<ShakeScreen> with TickerProviderStateMixin
                   const SizedBox(width: 4),
                     const Text(
                       "HP",
-                      style: TextStyle(fontSize: 24, color: Colors.black),
+                      style: TextStyle(fontSize: 24, color: Colors.white),
                     ),                  
                 ],
               ),
@@ -192,13 +193,14 @@ class _ShakeScreenState extends State<ShakeScreen> with TickerProviderStateMixin
                     const SizedBox(width: 4),
                     const Text(
                       "damages",
-                      style: TextStyle(fontSize: 24, color: Colors.black),
+                      style: TextStyle(fontSize: 24, color: Colors.white),
                     ),
                   ],
                 ),
               ],
             ),
           ),
+          
         ],
       ),
     );
