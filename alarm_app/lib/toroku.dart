@@ -15,17 +15,33 @@ final stopers = [
   "スマホをふる",
   "歩く",
   "喋る",
+  "歩く（難）",
   "ランダム",
 ];
 class _torokuPageState extends State<torokuPage> {
   double? _heading;     //今の角度
   double? _baseHeading; //基準値
-  bool horm = false;
+  bool mode = true; //　手入力かコンパスか
+  bool horm = false; //時か分
   late DateTime now = DateTime.now();
   late int hour = now.hour;
   late int minute = now.minute;
   int stoper = 0;
   StreamSubscription<CompassEvent>? _compass;
+  TimeOfDay? _selectedTime;
+
+  Future<void> _pickTime() async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (picked != null) {
+      setState(() {
+        _selectedTime = picked;
+      });
+    }
+  }
   @override
   void initState() {
     super.initState();
@@ -63,7 +79,25 @@ class _torokuPageState extends State<torokuPage> {
     int seconds = (angleInQuarter/90 * (horm ? 24 : 60)).truncate();
     double rad = angleInQuarter / 180 * pi * 4 ;
     return Scaffold(
-      appBar: AppBar(title: const Text("アラーム設定")),
+      appBar: AppBar(
+        title: const Text("アラーム設定"),
+        actions: [
+          Row(
+          children: [
+            Text(mode ? "コンパス" : "手入力", style: TextStyle(fontSize: 16)),
+            Switch(
+              value: mode,
+              onChanged: (value) {
+                setState(() {
+                  mode = value;
+                });
+              },
+            ),
+          ],
+        ),
+    const SizedBox(width: 10),
+        ],
+        ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -81,144 +115,171 @@ class _torokuPageState extends State<torokuPage> {
                   });
                 },
               ),
-            ),    
-            Text(horm ?"$seconds 時$minute 分":"$hour 時$seconds 分",style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                // 円の枠
-                Container(
-                  width: 300,
-                  height: 300,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey, width: 3),
+            ),  
+            if(mode)...[  
+              Text(horm ?"$seconds 時$minute 分":"$hour 時$seconds 分",style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  // 円の枠
+                  Container(
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.grey, width: 3),
+                    ),
                   ),
-                ),
-                // 中心点
-                Container(
-                  width: 10,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 3),
+                  // 中心点
+                  Container(
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 3),
+                    ),
                   ),
-                ),
-                // 目盛り
-                for (int i=0;i<12;i++)...[
+                  // 目盛り
+                  for (int i=0;i<12;i++)...[
+                    Transform.rotate(
+                      angle: (pi/6)*i,
+                      alignment: Alignment.center,
+                      child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          width: 2,   
+                          height: 50,  
+                          color: Colors.grey,
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          width: 2,   
+                          height: 250, 
+                          color: Colors.transparent,
+                        ),
+                      ],
+                    )
+                    )
+                  ],
+                  //目盛り（数字）
+                  for (int i=0;i<12;i++)...[
+                    Transform.rotate(
+                      angle: (pi/6)*i,
+                      alignment: Alignment.center,
+                      child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(horm ? "$i" : "${i*5}"),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          width: 2,   
+                          height: 350, 
+                          color: Colors.transparent,
+                        ),
+                      ],
+                    )
+                    )
+                  ],
+                  // 秒針
                   Transform.rotate(
-                    angle: (pi/6)*i,
+                    angle: rad,
                     alignment: Alignment.center,
                     child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        width: 2,   
-                        height: 50,  
-                        color: Colors.grey,
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        width: 2,   
-                        height: 250, 
-                        color: Colors.transparent,
-                      ),
-                    ],
-                  )
-                  )
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          width: 2,   // 秒針の長さ
+                          height: 150,  // 秒針の太さ
+                          color: Colors.red,
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          width: 2,   // 秒針の長さ
+                          height: 150,  // 秒針の太さ
+                          color: Colors.transparent,
+                        ),
+                      ],
+                    )
+                  ),
                 ],
-                //目盛り（数字）
-                for (int i=0;i<12;i++)...[
-                  Transform.rotate(
-                    angle: (pi/6)*i,
-                    alignment: Alignment.center,
-                    child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(horm ? "$i" : "${i*5}"),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        width: 2,   
-                        height: 350, 
-                        color: Colors.transparent,
-                      ),
-                    ],
-                  )
-                  )
-                ],
-                // 秒針
-                Transform.rotate(
-                  angle: rad,
-                  alignment: Alignment.center,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        width: 2,   // 秒針の長さ
-                        height: 150,  // 秒針の太さ
-                        color: Colors.red,
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        width: 2,   // 秒針の長さ
-                        height: 150,  // 秒針の太さ
-                        color: Colors.transparent,
-                      ),
-                    ],
-                  )
-                ),
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ElevatedButton(
-                  onPressed: (){
-                    setState(() {
-                      _baseHeading = _heading;
-                      
-                    });
-                  }, 
-                  child: Text("リセット")
-                ),
-                ElevatedButton(
-                  onPressed: (){
-                    if(horm ){
-                      hour = seconds;
-                    }
-                    else{
-                      minute = seconds;
-                    }
-                    List<int> time = [hour,minute,stoper];
-                    Navigator.pop(context, time);
-                  },
-                  child: Text("セット")
-                ),
-                FlutterSwitch(
-                  width: 100,
-                  height: 40,
-                  toggleSize: 30,
-                  valueFontSize: 20,
-                  activeText: "時",
-                  inactiveText: "分",
-                  showOnOff: true,
-                  value: horm,
-                  onToggle: (val) {
-                    setState(() {
-                      if(val){
-                        minute = seconds;
-                      }
-                      else{
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(
+                    onPressed: (){
+                      setState(() {
+                        _baseHeading = _heading;
+                        
+                      });
+                    }, 
+                    child: Text("リセット")
+                  ),
+                  ElevatedButton(
+                    onPressed: (){
+                      if(horm ){
                         hour = seconds;
                       }
-                      horm = val;
-                    });
-                  },
-                ),
-              ]
-            ),
+                      else{
+                        minute = seconds;
+                      }
+                      List<int> time = [hour,minute,stoper];
+                      Navigator.pop(context, time);
+                    },
+                    child: Text("セット")
+                  ),
+                  FlutterSwitch(
+                    width: 100,
+                    height: 40,
+                    toggleSize: 30,
+                    valueFontSize: 20,
+                    activeText: "時",
+                    inactiveText: "分",
+                    showOnOff: true,
+                    value: horm,
+                    onToggle: (val) {
+                      setState(() {
+                        if(val){
+                          minute = seconds;
+                        }
+                        else{
+                          hour = seconds;
+                        }
+                        horm = val;
+                      });
+                    },
+                  ),
+                ]
+              ),
+            ]
+            else...[
+              Text(
+                _selectedTime != null
+                    ? "${_selectedTime!.hour} 時 ${_selectedTime!.minute} 分"
+                    : "まだ選択されていません",
+                style: TextStyle(fontSize: 24),
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(
+                    onPressed: _pickTime,
+                    child: Text("時刻入力"),
+                  ),
+                  ElevatedButton(
+                    onPressed: (){
+                      List<int> time = [_selectedTime!.hour,_selectedTime!.minute,stoper];
+                      Navigator.pop(context, time);
+                    },
+                    child: Text("セット")
+                  ),
+                ],
+              ),
+            ]
           ],
         ),
       ),

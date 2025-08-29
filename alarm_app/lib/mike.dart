@@ -114,6 +114,7 @@ class _SpeechPageState extends State<SpeechPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(quotes[ranid]["quote"] ?? "エラー",style: GoogleFonts.shipporiMinchoB1(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
             Text("by:${quotes[ranid]["by"]}"),
             const SizedBox(height: 10),
             Text(_text),
